@@ -97,7 +97,7 @@ function Sidebar({ className, children, ...props }: React.ComponentProps<"aside"
     <aside
       data-state={open ? "open" : "collapsed"}
       className={cn(
-        "hidden h-svh shrink-0 flex-col border-r border-border bg-card text-card-foreground transition-[width] duration-200 md:flex",
+        "sticky top-0 hidden h-svh shrink-0 self-start flex-col border-r border-border bg-card text-card-foreground transition-[width] duration-200 md:flex",
         open ? "w-64" : "w-0 overflow-hidden border-r-0",
         className,
       )}
