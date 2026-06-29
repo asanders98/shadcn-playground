@@ -6,10 +6,12 @@
 // Pools) extend this module with shifts, attendance rows, and the candidate
 // pool, all keyed off these same staff ids.
 
-/** The company shown in the sidebar switcher. */
+/** The company shown in the sidebar switcher and the My Company settings form. */
 export const COMPANY = {
   id: "acme-bistro",
   name: "Acme Bistro",
+  email: "hello@acmebistro.com",
+  phone: "(555) 014-2200",
 } as const;
 
 export interface StaffMember {
