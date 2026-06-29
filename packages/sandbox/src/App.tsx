@@ -50,7 +50,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@nxtpeople/ui";
+} from "@acme/ui";
 import { Bell, Home, Settings, Users } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -71,11 +71,11 @@ export function App() {
       <main className="mx-auto max-w-5xl space-y-10 p-10">
         <header className="space-y-1">
           <h1 className="text-2xl font-bold text-foreground">
-            @nxtpeople/ui — kitchen sink
+            @acme/ui — kitchen sink
           </h1>
           <p className="text-sm text-muted-foreground">
             Internal dev surface for visually verifying components against the
-            NxtPeople DS. Not the showcase demo.
+            Acme DS. Not the showcase demo.
           </p>
         </header>
 
@@ -94,7 +94,7 @@ export function App() {
         <Section title="Text inputs">
           <div className="grid w-72 gap-1.5">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@nxtpeople.com" />
+            <Input id="email" type="email" placeholder="you@acme.com" />
           </div>
         </Section>
 
@@ -184,7 +184,7 @@ export function App() {
             <SidebarProvider>
               <Sidebar>
                 <SidebarHeader>
-                  <span className="px-2 font-semibold">NxtPeople</span>
+                  <span className="px-2 font-semibold">Acme</span>
                 </SidebarHeader>
                 <SidebarSeparator />
                 <SidebarContent>

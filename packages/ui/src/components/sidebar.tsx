@@ -8,7 +8,7 @@ import { Separator } from "./separator";
 import { Sheet, SheetContent, SheetTitle } from "./sheet";
 
 /**
- * Sidebar — a COMPOSED navigation component styled to NxtPeople nav styling
+ * Sidebar — a COMPOSED navigation component styled to Acme nav styling
  * (the DS has no dedicated desktop sidebar — only Navbar Mobile / Nav Menu
  * Option / Menu Option). It is intentionally not a 1:1 Figma port.
  *

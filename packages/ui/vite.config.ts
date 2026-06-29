@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-// Library build config. In the monorepo, consuming apps import @nxtpeople/ui
+// Library build config. In the monorepo, consuming apps import @acme/ui
 // directly from source (see package.json "exports"), which gives instant hot
 // reload. This build exists for the "graduate to a published package" path and
 // to verify the public API + tree-shaking story.

@@ -1,7 +1,7 @@
-# @nxtpeople/ui
+# @acme/ui
 
 A shared React component library — [shadcn/ui](https://ui.shadcn.com) components
-re-skinned to the **NxtPeople design system**. Built once, consumed by every app
+re-skinned to the **Acme design system**. Built once, consumed by every app
 in this monorepo via a workspace link, so a styling change in one place
 propagates everywhere (with hot reload, no re-copying files).
 
@@ -10,7 +10,7 @@ propagates everywhere (with hot reload, no re-copying files).
   `packages/ui` (not pulled from an external package), built on Radix primitives
   where shadcn uses them, with a `cn()` class-merge helper and
   [CVA](https://cva.style) for variants.
-- **Tokens:** a single Tailwind v4 `@theme` layer extracted from the NxtPeople
+- **Tokens:** a single Tailwind v4 `@theme` layer extracted from the Acme
   Figma file. Restyle the whole library by editing one file.
 
 > This repo covers the **library only**. The showcase demo app
@@ -21,8 +21,8 @@ propagates everywhere (with hot reload, no re-copying files).
 
 ```
 packages/
-  ui/        → @nxtpeople/ui      the component library (the product)
-  sandbox/   → @nxtpeople/sandbox internal "kitchen sink" dev surface
+  ui/        → @acme/ui      the component library (the product)
+  sandbox/   → @acme/sandbox internal "kitchen sink" dev surface
 apps/         reserved for the future demo (out of scope)
 ```
 
@@ -34,7 +34,7 @@ In a workspace app, add the dependency (pnpm links it locally):
 // apps/your-app/package.json
 {
   "dependencies": {
-    "@nxtpeople/ui": "workspace:*"
+    "@acme/ui": "workspace:*"
   }
 }
 ```
@@ -42,7 +42,7 @@ In a workspace app, add the dependency (pnpm links it locally):
 **1. Import components** from the single package entry:
 
 ```tsx
-import { Button, Card, CardHeader, CardTitle } from "@nxtpeople/ui";
+import { Button, Card, CardHeader, CardTitle } from "@acme/ui";
 
 export function Example() {
   return (
@@ -62,7 +62,7 @@ utility classes the components use:
 
 ```css
 /* apps/your-app/src/index.css */
-@import "@nxtpeople/ui/styles.css";
+@import "@acme/ui/styles.css";
 
 /* Tailwind v4 skips node_modules when scanning for class names, and the
    workspace package is symlinked there — so add it as a source explicitly. */
@@ -113,7 +113,7 @@ light theme under `:root`, with an empty `.dark` scaffold ready for future dark
 mode. The DS encodes these as Figma **Styles** (not Variables), so values were
 read from the foundation frames via the Figma REST API.
 
-**Figma source — file key `PzgNDV3ABFvKennNVgSHbM` ("NxtPeople DS")**
+**Figma source — file key `PzgNDV3ABFvKennNVgSHbM` ("Acme DS")**
 
 Foundations:
 
@@ -151,10 +151,10 @@ pnpm install
 pnpm dev         # run the kitchen-sink sandbox (hot-reloads on library edits)
 pnpm test        # render-smoke tests at the package export boundary
 pnpm typecheck   # type-check all packages
-pnpm build       # build @nxtpeople/ui (dist/ — publish-readiness check)
+pnpm build       # build @acme/ui (dist/ — publish-readiness check)
 ```
 
-In the monorepo, apps consume `@nxtpeople/ui` directly from **source** (see the
+In the monorepo, apps consume `@acme/ui` directly from **source** (see the
 package's `exports`), so library edits hot-reload instantly. The `build` script
 exists for the "graduate to a published package" path and to verify the public
 API + tree-shaking; it is not needed for local development.
@@ -163,7 +163,7 @@ API + tree-shaking; it is not needed for local development.
 
 Primary verification is **visual** — every component is rendered in the sandbox
 and checked against its Figma node. Automated tests are intentionally light:
-render-smoke tests that exercise each component through the `@nxtpeople/ui`
+render-smoke tests that exercise each component through the `@acme/ui`
 public boundary (the single seam a consuming app uses). Heavy visual-regression
 tooling is out of scope.
 
