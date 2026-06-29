@@ -46,6 +46,20 @@ function initialsOf(name: string): string {
   return (first + last).toUpperCase();
 }
 
+// Turn a raw {id,name,role} record into a full person: initials and colour are
+// derived here so they can never drift out of sync with the name/order. The
+// palette index is passed in so staff and candidates share one colour sequence.
+function makePerson(
+  member: { id: string; name: string; role: string },
+  paletteIndex: number,
+): StaffMember {
+  return {
+    ...member,
+    initials: initialsOf(member.name),
+    color: PALETTE[paletteIndex % PALETTE.length]!,
+  };
+}
+
 // The raw roster — name + role only. Initials and colour are derived below so
 // the two can never drift out of sync with the name/order.
 const ROSTER: ReadonlyArray<{ id: string; name: string; role: string }> = [
@@ -60,11 +74,47 @@ const ROSTER: ReadonlyArray<{ id: string; name: string; role: string }> = [
 ];
 
 /** The staff roster — ~8 people, fully typed, with initials + colour. */
-export const STAFF: ReadonlyArray<StaffMember> = ROSTER.map((member, i) => ({
-  ...member,
-  initials: initialsOf(member.name),
-  color: PALETTE[i % PALETTE.length]!,
-}));
+export const STAFF: ReadonlyArray<StaffMember> = ROSTER.map((member, i) =>
+  makePerson(member, i),
+);
+
+// A candidate in the talent pool is just a person (same identity model as
+// STAFF) — the Pools screen shows current staff plus external candidates who
+// are available to fill open shifts, so people stay coherent across screens.
+export type Candidate = StaffMember;
+
+// External candidates beyond the current staff. Roles overlap the roster on
+// purpose so the role filter on the Pools screen narrows to more than one card.
+const EXTRA_CANDIDATE_ROSTER: ReadonlyArray<{
+  id: string;
+  name: string;
+  role: string;
+}> = [
+  { id: "c1", name: "Isla Moreno", role: "Server" },
+  { id: "c2", name: "Jamal Wright", role: "Line Cook" },
+  { id: "c3", name: "Kira Petrov", role: "Bartender" },
+  { id: "c4", name: "Liam Walsh", role: "Host" },
+  { id: "c5", name: "Maya Okafor", role: "Sous Chef" },
+  { id: "c6", name: "Noah Bergström", role: "Server" },
+  { id: "c7", name: "Priya Anand", role: "Barista" },
+  { id: "c8", name: "Quinn Daniels", role: "Busser" },
+];
+
+/**
+ * The talent pool: current staff first, then external candidates. The palette
+ * index continues past the roster so every person keeps a distinct colour.
+ */
+export const CANDIDATES: ReadonlyArray<Candidate> = [
+  ...STAFF,
+  ...EXTRA_CANDIDATE_ROSTER.map((member, i) =>
+    makePerson(member, STAFF.length + i),
+  ),
+];
+
+/** Distinct roles across the pool, sorted — drives the Pools role filter. */
+export const CANDIDATE_ROLES: ReadonlyArray<string> = [
+  ...new Set(CANDIDATES.map((c) => c.role)),
+].sort();
 
 /** Whether someone is currently working a shift or stepped away on a break. */
 export type AttendanceStatus = "active" | "on-break";
