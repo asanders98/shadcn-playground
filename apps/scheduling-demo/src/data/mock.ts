@@ -78,6 +78,188 @@ export const STAFF: ReadonlyArray<StaffMember> = ROSTER.map((member, i) =>
   makePerson(member, i),
 );
 
+/** Index STAFF by id so views can resolve an id reference to a person. */
+export const STAFF_BY_ID: ReadonlyMap<string, StaffMember> = new Map(
+  STAFF.map((member) => [member.id, member]),
+);
+
+/** Look up a roster member by id (used to resolve shift assignments). */
+export function staffById(id: string): StaffMember | undefined {
+  return STAFF_BY_ID.get(id);
+}
+
+// =============================================================================
+// Planning view — the week-of-shifts data
+// =============================================================================
+// Still fully DETERMINISTIC: every shift's required/assigned/applicant counts
+// are derived from its grid position, so the planner, summary rollup, and smoke
+// tests all see the same board on every render. Shifts reference staff by id.
+
+/** Columns of the planner grid — the seven days of the week. */
+export const WEEK_DAYS = [
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+  "Sun",
+] as const;
+
+export interface MealPeriod {
+  /** Display name of the meal period (a group of role rows). */
+  name: string;
+  /** Role rows shown under this meal period, top to bottom. */
+  roles: string[];
+}
+
+/** Row groups of the planner grid — roles grouped by meal period. */
+export const MEAL_PERIODS: ReadonlyArray<MealPeriod> = [
+  { name: "Brunch", roles: ["Server", "Host"] },
+  { name: "Dinner", roles: ["Server", "Bartender", "Line Cook"] },
+];
+
+/** A shift's fill state, derived from assigned-vs-required. */
+export type ShiftStatus = "confirmed" | "partial" | "urgent";
+
+export interface Shift {
+  /** Stable id, also used as the React key and test handle. */
+  id: string;
+  /** Meal period this shift belongs to (matches a MEAL_PERIODS name). */
+  mealPeriod: string;
+  /** Role row label (matches a role in its meal period). */
+  role: string;
+  /** Column index 0..6 into WEEK_DAYS. */
+  day: number;
+  /** Seats that need filling. */
+  required: number;
+  /** Staff assigned to the shift (ids into STAFF). */
+  assignedStaffIds: string[];
+  /** Staff who applied but aren't assigned yet (ids into STAFF). */
+  applicantIds: string[];
+}
+
+const STAFF_IDS = STAFF.map((member) => member.id);
+
+/** Take `count` ids starting at `start`, wrapping around the roster. */
+function rotate(start: number, count: number): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < count; i++) {
+    out.push(STAFF_IDS[(start + i) % STAFF_IDS.length]!);
+  }
+  return out;
+}
+
+// Build one shift per (role row × day) cell. Required/filled/applicant counts
+// come from the cell's position so the board is varied but reproducible.
+function buildShifts(): Shift[] {
+  const shifts: Shift[] = [];
+  let row = 0;
+  for (const period of MEAL_PERIODS) {
+    for (const role of period.roles) {
+      for (let day = 0; day < WEEK_DAYS.length; day++) {
+        const required = 2 + ((row + day) % 3); // 2..4 seats
+        const filled = (day * 3 + row * 2) % (required + 1); // 0..required
+        const start = (row * 5 + day * 3) % STAFF_IDS.length;
+        const assignedStaffIds = rotate(start, filled);
+
+        // Applicants are the next roster members after the assigned block,
+        // skipping anyone already assigned to this shift.
+        const wanted = 1 + ((row + day) % 3); // 1..3 applicants
+        const applicantIds: string[] = [];
+        for (
+          let probe = start + filled;
+          applicantIds.length < wanted &&
+          probe < start + filled + STAFF_IDS.length;
+          probe++
+        ) {
+          const id = STAFF_IDS[probe % STAFF_IDS.length]!;
+          if (!assignedStaffIds.includes(id)) applicantIds.push(id);
+        }
+
+        shifts.push({
+          id: `sh-${row}-${day}`,
+          mealPeriod: period.name,
+          role,
+          day,
+          required,
+          assignedStaffIds,
+          applicantIds,
+        });
+      }
+      row++;
+    }
+  }
+  return shifts;
+}
+
+/** The full week of shifts — one card per role-row × day cell. */
+export const SHIFTS: ReadonlyArray<Shift> = buildShifts();
+
+/** Derive a shift's status from how many of its seats are filled. */
+export function shiftStatus(shift: Shift): ShiftStatus {
+  const filled = shift.assignedStaffIds.length;
+  if (filled === 0) return "urgent";
+  if (filled >= shift.required) return "confirmed";
+  return "partial";
+}
+
+export interface ShiftSummary {
+  total: number;
+  confirmed: number;
+  partial: number;
+  urgent: number;
+  /** Shifts still needing staff (partial + urgent). */
+  open: number;
+}
+
+/** Count shifts by status bucket for the rollup line above the grid. */
+export function summarizeShifts(
+  shifts: ReadonlyArray<Shift>,
+): ShiftSummary {
+  let confirmed = 0;
+  let partial = 0;
+  let urgent = 0;
+  for (const shift of shifts) {
+    const status = shiftStatus(shift);
+    if (status === "confirmed") confirmed++;
+    else if (status === "partial") partial++;
+    else urgent++;
+  }
+  return {
+    total: shifts.length,
+    confirmed,
+    partial,
+    urgent,
+    open: partial + urgent,
+  };
+}
+
+// The week the board represents. Stepping the date range is cosmetic — the
+// shifts never change — so we only recompute the label, off a fixed Monday.
+const WEEK_BASE_MS = Date.UTC(2025, 8, 15); // Mon 15 Sep 2025
+const DAY_MS = 86_400_000;
+
+function formatDate(ms: number): string {
+  const date = new Date(ms);
+  const dd = String(date.getUTCDate()).padStart(2, "0");
+  const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const yy = String(date.getUTCFullYear()).slice(2);
+  return `${dd}/${mm}/${yy}`;
+}
+
+/** The displayed week range, e.g. "15/09/25 – 21/09/25" at offset 0. */
+export function weekLabel(offset: number): string {
+  const start = WEEK_BASE_MS + offset * 7 * DAY_MS;
+  return `${formatDate(start)} – ${formatDate(start + 6 * DAY_MS)}`;
+}
+
+/** Day-of-month for each column header in the displayed week. */
+export function weekDayDates(offset: number): number[] {
+  const start = WEEK_BASE_MS + offset * 7 * DAY_MS;
+  return WEEK_DAYS.map((_, i) => new Date(start + i * DAY_MS).getUTCDate());
+}
+
 // A candidate in the talent pool is just a person (same identity model as
 // STAFF) — the Pools screen shows current staff plus external candidates who
 // are available to fill open shifts, so people stay coherent across screens.
@@ -145,8 +327,3 @@ export const ATTENDANCE: ReadonlyArray<AttendanceRow> = [
   { staffId: "s6", status: "on-break", hoursWorked: 2, hoursScheduled: 8, present: true },
   { staffId: "s7", status: "active", hoursWorked: 5, hoursScheduled: 5, present: true },
 ];
-
-/** Index STAFF by id so views can resolve an {@link AttendanceRow} to a person. */
-export const STAFF_BY_ID: ReadonlyMap<string, StaffMember> = new Map(
-  STAFF.map((member) => [member.id, member]),
-);
