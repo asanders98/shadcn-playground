@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter @acme/sandbox dev",
-    "build": "pnpm --filter @acme/ui build",
+    "demo": "pnpm --filter @acme/scheduling-demo dev",
+    "build": "pnpm --filter @acme/ui build && pnpm --filter @acme/scheduling-demo build",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm --filter @acme/ui test"
+    "test": "pnpm --filter @acme/ui test && pnpm --filter @acme/scheduling-demo test"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
