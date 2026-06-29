@@ -152,6 +152,29 @@ describe("component render-smoke tests (export boundary)", () => {
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
 
+  it("SidebarMenuButton asChild merges onto the child element", () => {
+    render(
+      <SidebarProvider>
+        <Sidebar>
+          <SidebarContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive>
+                  <a href="/reports">Reports</a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarContent>
+        </Sidebar>
+      </SidebarProvider>,
+    );
+    const link = screen.getByRole("link", { name: "Reports" });
+    // Nav styling + state land on the <a>, not on a wrapping <span>.
+    expect(link).toHaveClass("rounded-md");
+    expect(link).toHaveAttribute("data-active", "true");
+    expect(link.querySelector("span")).toBeNull();
+  });
+
   it("Badge variants", () => {
     render(
       <div>

@@ -1,3 +1,4 @@
+import { Slot } from "@radix-ui/react-slot";
 import { PanelLeft } from "lucide-react";
 import * as React from "react";
 
@@ -31,8 +32,13 @@ function useIsMobile() {
 }
 
 interface SidebarContextValue {
+  /** Desktop panel expanded/collapsed. */
   open: boolean;
   setOpen: (open: boolean) => void;
+  /** Mobile drawer open/closed (defaults closed). */
+  openMobile: boolean;
+  setOpenMobile: (open: boolean) => void;
+  /** Toggles whichever surface is active for the current viewport. */
   toggle: () => void;
   isMobile: boolean;
 }
@@ -52,11 +58,17 @@ function SidebarProvider({
   ...props
 }: React.ComponentProps<"div"> & { defaultOpen?: boolean }) {
   const isMobile = useIsMobile();
+  // Desktop panel state (controlled by `defaultOpen`) and the mobile drawer
+  // state are tracked separately so the drawer never auto-opens on load.
   const [open, setOpen] = React.useState(defaultOpen);
-  const toggle = React.useCallback(() => setOpen((o) => !o), []);
+  const [openMobile, setOpenMobile] = React.useState(false);
+  const toggle = React.useCallback(
+    () => (isMobile ? setOpenMobile((o) => !o) : setOpen((o) => !o)),
+    [isMobile],
+  );
   const value = React.useMemo(
-    () => ({ open, setOpen, toggle, isMobile }),
-    [open, toggle, isMobile],
+    () => ({ open, setOpen, openMobile, setOpenMobile, toggle, isMobile }),
+    [open, openMobile, toggle, isMobile],
   );
   return (
     <SidebarContext.Provider value={value}>
@@ -68,11 +80,11 @@ function SidebarProvider({
 }
 
 function Sidebar({ className, children, ...props }: React.ComponentProps<"aside">) {
-  const { open, setOpen, isMobile } = useSidebar();
+  const { open, openMobile, setOpenMobile, isMobile } = useSidebar();
 
   if (isMobile) {
     return (
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet open={openMobile} onOpenChange={setOpenMobile}>
         <SheetContent side="left" className="w-72 p-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div className="flex h-full flex-col">{children}</div>
@@ -153,10 +165,10 @@ const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   SidebarMenuButtonProps
 >(({ className, isActive = false, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? "span" : "button";
+  const Comp = asChild ? Slot : "button";
   return (
     <Comp
-      ref={ref as React.Ref<HTMLButtonElement & HTMLSpanElement>}
+      ref={ref}
       data-active={isActive}
       className={cn(
         "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-foreground outline-none transition-colors",
