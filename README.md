@@ -159,6 +159,39 @@ package's `exports`), so library edits hot-reload instantly. The `build` script
 exists for the "graduate to a published package" path and to verify the public
 API + tree-shaking; it is not needed for local development.
 
+## Deploying the demo to GitHub Pages
+
+The **Acme Scheduling** demo (`apps/scheduling-demo`) deploys automatically to
+GitHub Pages. The workflow at [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+runs on every push to `main`: it installs dependencies, builds `@acme/ui` and
+then the demo (`pnpm build`), and publishes the demo's `dist/` using the official
+GitHub Pages actions. Once live, the site is served at:
+
+**https://asanders98.github.io/shadcn-playground/**
+
+Deep links and hard refreshes work because the app uses `HashRouter` and Vite is
+configured with `base: "/shadcn-playground/"`, so every asset and route resolves
+under the project-pages subpath.
+
+### One-time maintainer setup (required before the first deploy)
+
+The agent sets up the workflow only — a maintainer must do this manually once,
+because it cannot be automated from CI:
+
+1. **Make the repository public.** GitHub Pages does not publish from a private
+   repo on the free plan, so the deploy job fails until the repo is public.
+   (Settings → General → Danger Zone → Change repository visibility.)
+2. **Enable Pages with the GitHub Actions source.** Settings → Pages → under
+   **Build and deployment**, set **Source** to **GitHub Actions**.
+
+After those two steps, push to `main` (or re-run the workflow from the Actions
+tab) and the site goes live at the URL above. The workflow can also be triggered
+by hand via **workflow_dispatch** from the Actions tab.
+
+> **Secrets:** this workflow needs no secrets and commits none. In particular,
+> the Figma PAT used during library development must never be committed or added
+> to the workflow — the demo builds entirely from checked-in source.
+
 ## Testing approach
 
 Primary verification is **visual** — every component is rendered in the sandbox
