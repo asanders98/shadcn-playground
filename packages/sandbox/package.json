@@ -1,0 +1,27 @@
+{
+  "name": "@nxtpeople/sandbox",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Internal kitchen-sink dev surface for @nxtpeople/ui. Not the showcase demo.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nxtpeople/ui": "workspace:*",
+    "lucide-react": "^1.21.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.4",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.2.0"
+  }
+}
