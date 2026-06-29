@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "../lib/utils";
 
 /**
- * Button — skinned to the NxtPeople DS Button set (Figma node 4242:14161).
+ * Button — skinned to the Acme DS Button set (Figma node 4242:14161).
  *
  * Figma → shadcn variant mapping
  * ------------------------------

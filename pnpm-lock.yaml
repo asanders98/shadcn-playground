@@ -14,7 +14,7 @@ importers:
 
   packages/sandbox:
     dependencies:
-      '@nxtpeople/ui':
+      '@acme/ui':
         specifier: workspace:*
         version: link:../ui
       lucide-react:

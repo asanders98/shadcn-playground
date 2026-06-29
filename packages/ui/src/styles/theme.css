@@ -2,13 +2,13 @@
 @import "tw-animate-css";
 
 /* =============================================================================
- * @nxtpeople/ui — design tokens
+ * @acme/ui — design tokens
  * =============================================================================
- * Extracted from the NxtPeople DS Figma file (key PzgNDV3ABFvKennNVgSHbM) via
+ * Extracted from the Acme DS Figma file (key PzgNDV3ABFvKennNVgSHbM) via
  * the REST API. Mirrors the DS token taxonomy:
  *
  *   Primitive colours  → raw palette ramps        (Figma 8989:20213)
- *   Brand colours      → NxtPeople brand hues      (Figma 8989:20214)
+ *   Brand colours      → Acme brand hues      (Figma 8989:20214)
  *   Semantic roles     → surface / text / state    (Figma 8989:20215)
  *   Typography         → Text Styles               (Figma 9285:15981)
  *   Shadows            → elevation effect styles    (Figma 9046:10701)

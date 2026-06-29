@@ -1,16 +1,16 @@
 {
-  "name": "@nxtpeople/sandbox",
+  "name": "@acme/sandbox",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Internal kitchen-sink dev surface for @nxtpeople/ui. Not the showcase demo.",
+  "description": "Internal kitchen-sink dev surface for @acme/ui. Not the showcase demo.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nxtpeople/ui": "workspace:*",
+    "@acme/ui": "workspace:*",
     "lucide-react": "^1.21.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

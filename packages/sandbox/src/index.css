@@ -1,7 +1,7 @@
-/* One-step theme import: pulls in Tailwind v4 + all NxtPeople DS tokens. */
-@import "@nxtpeople/ui/styles.css";
+/* One-step theme import: pulls in Tailwind v4 + all Acme DS tokens. */
+@import "@acme/ui/styles.css";
 
 /* Tailwind v4 ignores node_modules when auto-detecting class names, and the
  * workspace package is symlinked there. Point it at the library source so the
- * utilities used inside @nxtpeople/ui components get generated. */
+ * utilities used inside @acme/ui components get generated. */
 @source "../../ui/src/**/*.{ts,tsx}";

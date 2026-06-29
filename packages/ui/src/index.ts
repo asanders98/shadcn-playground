@@ -1,5 +1,5 @@
-// Public entry point for @nxtpeople/ui.
-// Consuming apps import everything from here: `import { Button } from "@nxtpeople/ui"`.
+// Public entry point for @acme/ui.
+// Consuming apps import everything from here: `import { Button } from "@acme/ui"`.
 
 export { cn } from "./lib/utils";
 

@@ -3,7 +3,7 @@ import * as React from "react";
 import { cn } from "../lib/utils";
 
 /**
- * Input — skinned to the NxtPeople DS Textinputfield (Figma node 9476:12734):
+ * Input — skinned to the Acme DS Textinputfield (Figma node 9476:12734):
  * white (Card) surface, grey-400 border, 4px corners, grey placeholder text,
  * blue focus ring. Height aligns with Button (40px) for form rows.
  */
