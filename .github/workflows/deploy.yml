@@ -1,0 +1,71 @@
+name: Deploy demo to GitHub Pages
+
+# Publishes the Acme Scheduling demo (apps/scheduling-demo) to GitHub Pages on
+# every push to main. The Vite `base: "/shadcn-playground/"` + HashRouter in the
+# app make assets and deep links resolve under the project-pages subpath.
+#
+# One-time maintainer setup is required before the first deploy succeeds — see
+# the "Deploying the demo to GitHub Pages" section in README.md.
+
+on:
+  push:
+    branches: [main]
+  # Allow re-running the deploy by hand from the Actions tab.
+  workflow_dispatch:
+
+# Least-privilege token: read the repo, write Pages, mint the OIDC token that
+# actions/deploy-pages exchanges for a deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deploy at a time; let an in-flight run finish rather than
+# cancelling it (cancelling mid-deploy can leave Pages in a bad state).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # `pnpm build` builds @acme/ui first, then @acme/scheduling-demo, emitting
+      # the demo to apps/scheduling-demo/dist.
+      - name: Build library and demo
+        run: pnpm build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/scheduling-demo/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # The deployment publishes to the repo's github-pages environment.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
