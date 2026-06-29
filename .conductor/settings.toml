@@ -1,0 +1,23 @@
+#:schema https://conductor.build/schemas/settings.repo.schema.json
+
+# Shared Conductor config for the acme-ui-monorepo (pnpm workspace, Vite apps).
+# Both runnable surfaces are Vite dev servers with no shared local resource
+# (no database, Docker stack, or fixed port), so workspaces can run in parallel.
+
+[scripts]
+# Install workspace deps with the repo's package manager (pnpm@11.9.0).
+setup = "pnpm install"
+
+# Each workspace gets its own CONDUCTOR_PORT range, so multiple workspaces can
+# run dev servers at the same time without colliding.
+run_mode = "concurrent"
+
+# Acme Scheduling demo — the primary showcase app (also what Pages deploys).
+[scripts.run.demo]
+command = "pnpm --filter @acme/scheduling-demo dev -- --port $CONDUCTOR_PORT --strictPort"
+default = true
+
+# Sandbox — internal kitchen-sink dev surface for @acme/ui. Uses the next port
+# in the workspace's reserved range so it can run alongside the demo.
+[scripts.run.sandbox]
+command = "pnpm --filter @acme/sandbox dev -- --port $((CONDUCTOR_PORT + 1)) --strictPort"

@@ -75,3 +75,7 @@ export { Alert, AlertTitle, AlertDescription } from "./components/alert";
 export { Progress } from "./components/progress";
 export { Skeleton } from "./components/skeleton";
 export { Avatar, AvatarImage, AvatarFallback } from "./components/avatar";
+
+// Showcase — a grouped gallery of every component, shared by the sandbox and
+// the demo's Components page so the two never drift.
+export { ComponentShowcase } from "./showcase/component-showcase";

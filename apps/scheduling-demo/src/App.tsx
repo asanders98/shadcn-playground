@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AppSidebar } from "./AppSidebar";
 import { AttendanceView } from "./views/AttendanceView";
+import { ComponentsView } from "./views/ComponentsView";
 import { MyCompanyView } from "./views/MyCompanyView";
 import { PlanningView } from "./views/PlanningView";
 import { PoolsView } from "./views/PoolsView";
@@ -25,6 +26,7 @@ export function App() {
               <Route path="/attendance" element={<AttendanceView />} />
               <Route path="/pools" element={<PoolsView />} />
               <Route path="/my-company" element={<MyCompanyView />} />
+              <Route path="/components" element={<ComponentsView />} />
               {/* Unknown hash → back to the default landing view. */}
               <Route path="*" element={<Navigate to="/planning" replace />} />
             </Routes>
