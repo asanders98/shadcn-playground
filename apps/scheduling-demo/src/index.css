@@ -1,0 +1,7 @@
+/* One-step theme import: pulls in Tailwind v4 + all Acme DS tokens. */
+@import "@acme/ui/styles.css";
+
+/* Tailwind v4 ignores node_modules when auto-detecting class names, and the
+ * workspace package is symlinked there. Point it at the library source so the
+ * utilities used inside @acme/ui components get generated. */
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
