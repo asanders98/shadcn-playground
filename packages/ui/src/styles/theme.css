@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+/* =============================================================================
+ * @nxtpeople/ui — design tokens
+ * =============================================================================
+ * Extracted from the NxtPeople DS Figma file (key PzgNDV3ABFvKennNVgSHbM) via
+ * the REST API. Mirrors the DS token taxonomy:
+ *
+ *   Primitive colours  → raw palette ramps        (Figma 8989:20213)
+ *   Brand colours      → NxtPeople brand hues      (Figma 8989:20214)
+ *   Semantic roles     → surface / text / state    (Figma 8989:20215)
+ *   Typography         → Text Styles               (Figma 9285:15981)
+ *   Shadows            → elevation effect styles    (Figma 9046:10701)
+ *   Spacing / radii    → Grid System / Spacing      (Figma 9238:10321)
+ *
+ * Semantic roles implement the DS surface/elevation model (stacking order from
+ * the Semantic Colours frame), each paired with its elevation shadow:
+ *   Base(0) off-white canvas → Container/Card(1) → Contextual/Floating(2)
+ *   → Overlay/Modal(3, +scrim) → Floating/Tooltip(4, deliberately inverted/dark)
+ *
+ * Components reference ONLY the semantic roles + @theme utilities — never the
+ * primitives directly. Restyle the whole library by editing this one file.
+ * ========================================================================== */
+
+/* Enables `dark:` utilities driven by a `.dark` class on an ancestor. */
+@custom-variant dark (&:is(.dark *));
+
+/* -----------------------------------------------------------------------------
+ * Layer 1 — Primitive colours  (Figma 8989:20213)
+ * Raw, role-agnostic palette. Nothing in components references these directly.
+ * -------------------------------------------------------------------------- */
+:root {
+  --np-grey-0: #ffffff;
+  --np-grey-50: #f9fbff;
+  --np-grey-100: #f6f7fa;
+  --np-grey-200: #ecedef;
+  --np-grey-300: #e9eaeb;
+  --np-grey-400: #d1d5de;
+  --np-grey-500: #c5cfda;
+  --np-grey-600: #97a7b9;
+  --np-grey-700: #72879e;
+  --np-grey-800: #546181;
+  --np-grey-900: #222e47;
+  --np-grey-950: #0c1529;
+
+  --np-blue-50: #f7faff;
+  --np-blue-100: #ebf3ff;
+  --np-blue-200: #e3ecf8;
+  --np-blue-300: #d8e1f5;
+  --np-blue-400: #b4c7f2;
+  --np-blue-500: #77a1f9;
+  --np-blue-600: #185be3;
+  --np-blue-700: #184db8;
+  --np-blue-800: #063696;
+  --np-blue-900: #032365;
+  --np-blue-950: #081c4a;
+
+  --np-red-100: #fff5f7;
+  --np-red-200: #ffecf0;
+  --np-red-300: #ffd6e0;
+  --np-red-400: #ffa0b1;
+  --np-red-500: #ff6d89;
+  --np-red-600: #f54769;
+  --np-red-700: #e21e43;
+  --np-red-900: #ca0329;
+
+  --np-green-100: #f1fffb;
+  --np-green-200: #ddf9f1;
+  --np-green-300: #bbf3e3;
+  --np-green-400: #92eed4;
+  --np-green-500: #66ceb0;
+  --np-green-600: #00c28a;
+  --np-green-700: #03aa7a;
+  --np-green-800: #039167;
+
+  --np-yellow-100: #fffbee;
+  --np-yellow-700: #fadc4c;
+  --np-yellow-800: #f7d62f;
+
+  --np-orange-100: #fff4ea;
+  --np-orange-700: #fea453;
+  --np-orange-800: #f79342;
+  --np-orange-900: #e37b26;
+  --np-orange-950: #c2691f;
+
+  --np-purple-600: #dc93ed;
+  --np-purple-800: #b53fd0;
+
+  /* Layer 2 — Brand colours  (Figma 8989:20214) */
+  --np-brand-primary: var(--np-blue-950); /* #081c4a navy */
+  --np-brand-primary-light: var(--np-blue-600); /* #185be3 */
+  --np-brand-secondary: var(--np-grey-100);
+
+  /* Product accents (NxtJob / NxtForm / NxtMatch / NxtPlan / NxtPay / Invoicing) */
+  --np-product-nxtjob: #e4002b;
+  --np-product-nxtform: #00afd7;
+  --np-product-nxtmatch: #ffb81c;
+  --np-product-nxtplan: #00c28a;
+  --np-product-nxtpay: #9b26b6;
+  --np-product-nxtinvoicing: #009ca6;
+}
+
+/* -----------------------------------------------------------------------------
+ * Layer 3 — Semantic roles (light theme)  (Figma 8989:20215)
+ * The surface/elevation model lives here. Components reference ONLY these.
+ * -------------------------------------------------------------------------- */
+:root {
+  --radius: 0.375rem; /* 6px base; button corners (rounded-md) resolve to 4px */
+
+  /* Base(0) surface — off-white page canvas */
+  --background: var(--np-grey-100);
+  --foreground: var(--np-grey-950);
+
+  /* Container/Card(1) surface */
+  --card: var(--np-grey-0);
+  --card-foreground: var(--np-grey-950);
+
+  /* Contextual/Floating(2) surface — dropdowns, menus, selects */
+  --popover: var(--np-grey-0);
+  --popover-foreground: var(--np-grey-950);
+
+  /* Overlay/Modal(3) surface (+ scrim) */
+  --modal: var(--np-grey-0);
+  --modal-foreground: var(--np-grey-950);
+  --scrim: rgb(12 21 41 / 0.45);
+
+  /* Floating/Tooltip(4) surface — deliberately inverted/dark */
+  --tooltip: var(--np-grey-950);
+  --tooltip-foreground: var(--np-grey-0);
+
+  /* Brand / primary action (DS Button · Type=Primary, Style=Default) */
+  --primary: var(--np-brand-primary);
+  --primary-foreground: var(--np-grey-0);
+  --primary-hover: var(--np-grey-900); /* #222e47 */
+  --primary-active: var(--np-grey-950); /* #0c1529 */
+
+  /* Filled secondary (DS Brand/Secondary) */
+  --secondary: var(--np-grey-100);
+  --secondary-foreground: var(--np-grey-950);
+  --secondary-hover: var(--np-grey-200);
+
+  /* Muted */
+  --muted: var(--np-grey-100);
+  --muted-foreground: var(--np-grey-700); /* text Secondary */
+
+  /* Accent — the DS hover/pressed surface (blue-50 / blue-100) */
+  --accent: var(--np-blue-50);
+  --accent-foreground: var(--np-brand-primary);
+  --accent-active: var(--np-blue-100);
+
+  /* Link / tertiary action text */
+  --link: var(--np-blue-600);
+
+  /* State */
+  --destructive: var(--np-red-600);
+  --destructive-foreground: var(--np-grey-0);
+  --destructive-hover: var(--np-red-700);
+  --destructive-active: var(--np-red-900);
+  --success: var(--np-green-700);
+  --warning: var(--np-orange-700);
+  --info: var(--np-yellow-700);
+
+  /* Lines & focus */
+  --border: var(--np-grey-400);
+  --input: var(--np-grey-400);
+  --ring: var(--np-blue-600);
+
+  /* Elevation shadows, one per surface  (Figma 9046:10701 effect styles) */
+  --shadow-card: -1px 0 2px 0 rgb(0 0 0 / 0.05), 1px 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-floating: 0 2px 4px 0 rgb(0 0 0 / 0.15);
+  --shadow-modal: 2px 2px 4px 0 rgb(0 0 0 / 0.15);
+  --shadow-tooltip: 0 2px 4px 0 rgb(0 0 0 / 0.15);
+}
+
+/* -----------------------------------------------------------------------------
+ * Dark theme — intentionally empty scaffold (dark mode is future work).
+ * Add `class="dark"` on a wrapper and fill these in to enable it.
+ * -------------------------------------------------------------------------- */
+.dark {
+  /* TODO: populate dark-theme semantic roles (out of scope for now). */
+}
+
+/* -----------------------------------------------------------------------------
+ * @theme — expose semantic roles as Tailwind v4 utilities.
+ * `inline` means utilities resolve to the var() references above, so flipping
+ * :root / .dark restyles every component without regenerating utilities.
+ * -------------------------------------------------------------------------- */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-modal: var(--modal);
+  --color-modal-foreground: var(--modal-foreground);
+  --color-scrim: var(--scrim);
+
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-foreground: var(--tooltip-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-active: var(--accent-active);
+
+  --color-link: var(--link);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-destructive-active: var(--destructive-active);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Border radius scale (DS buttons use 4px = rounded-md) */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Elevation shadows */
+  --shadow-card: var(--shadow-card);
+  --shadow-floating: var(--shadow-floating);
+  --shadow-modal: var(--shadow-modal);
+  --shadow-tooltip: var(--shadow-tooltip);
+
+  /* Typography (Figma 9285:15981): Poppins for text, Roboto Mono for numerals */
+  --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-numeric: "Roboto Mono", "Roboto", ui-monospace, monospace;
+}
+
+/* Sensible base so the off-white canvas + body font apply out of the box. */
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+}

@@ -1,0 +1,9 @@
+packages:
+  - "packages/*"
+  # apps/* is reserved for the future demo app (workforce-scheduling tool).
+  # It is out of scope for the library work but declared here so the demo
+  # drops in later without restructuring the workspace.
+  - "apps/*"
+# esbuild ships a postinstall that installs its platform binary; Vite needs it.
+allowBuilds:
+  esbuild: true

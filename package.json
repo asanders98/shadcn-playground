@@ -1,0 +1,19 @@
+{
+  "name": "nxtpeople-ui-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @nxtpeople/sandbox dev",
+    "build": "pnpm --filter @nxtpeople/ui build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @nxtpeople/ui test"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20"
+  }
+}
